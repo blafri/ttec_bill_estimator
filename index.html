@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/beercss@3.4.0/dist/cdn/beer.min.css" rel="stylesheet">
+    <script type="module" src="https://cdn.jsdelivr.net/npm/beercss@3.4.0/dist/cdn/beer.min.js"></script>
+    <title>How Much More: T&TEC New Rates Calculator</title>
+  </head>
+  <body>
+    <header style="text-align: center;">
+      <svg style="width: 100px;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72">
+        <g id="color">
+          <circle cx="36" cy="36" r="23" fill="#FCEA2B"/>
+          <ellipse cx="36" cy="48.395" rx="5.2452" ry="6.5383" fill="#FFFFFF"/>
+        </g>
+        <g id="hair"/>
+        <g id="skin"/>
+        <g id="skin-shadow"/>
+        <g id="line">
+          <circle cx="36" cy="36" r="23" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2"/>
+          <path fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M20.6948,27.2002c0.7207-1.3857,1.9278-2.4541,3.3907-3c1.4052-0.7002,3.0205-0.8486,4.5302-0.4209"/>
+          <path fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="M51.3052,27.2002c-1.582-2.7724-4.8037-4.1699-7.9092-3.4306"/>
+          <ellipse cx="36" cy="48.395" rx="5.2452" ry="6.5383" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2"/>
+          <path d="M30,35c0,1.6568-1.3448,3-3,3c-1.6553,0-3-1.3433-3-3c0-1.6552,1.3447-3,3-3C28.6552,32,30,33.3448,30,35"/>
+          <path d="M48,35c0,1.6568-1.3447,3-3,3s-3-1.3433-3-3c0-1.6552,1.3447-3,3-3S48,33.3448,48,35"/>
+        </g>
+      </svg>
+      <h5 style="text-align: center; display: block;">How Much More</h5>
+    </header>
+    <main style="padding: 1rem 0.5rem;">
+      <p>Enter the KWh consumption from your last T&Tec Bill.</p>
+      <div class="field border">
+        <input id="consumption" type="number" min="1" step="1">
+      </div>
+      <div style="text-align: right;">
+        <button id="calculate" role="button">Estimate New Bill</button>
+      </div>
+      <div id="result" style="padding: 1rem 0.5rem;"></div>
+      <template id="resultTemplate">
+        <article>
+          <h5>Estimated New Bill</h5>
+          <p>
+            Your electricty bill is estimated to increse by <span id="increase"></span>%
+          </p>
+          <h6 class="small">Previous Monthly Cost: <strong id="oldMonthly"></strong></h6>
+          <h6 class="small">Estimated New Cost: <strong id="newMonthly"></strong></h6>
+        </article>
+      </template>
+    </main>
+    <script>
+      const oldTarif = [[400, 0.26], [600, 0.32], [Infinity, 0.37]]
+      const newTarif = [[200, 0.28], [500, 0.4], [700, 0.54], [Infinity, 0.68]]
+      const calcButton = document.getElementById('calculate')
+      const formater = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' })
+
+      calcButton.addEventListener('click', () => {
+        let biMonthlyConsumption = parseInt(document.getElementById('consumption').value)
+        let monthlyConsumtion = biMonthlyConsumption / 2
+
+        const oldBiMonthly = oldTarif.reduce((total, rateTuple) => {
+          const deduction = biMonthlyConsumption > rateTuple[0] ? rateTuple[0] : biMonthlyConsumption
+          biMonthlyConsumption -= deduction
+
+          return total + (deduction * rateTuple[1])
+        }, 6) * 1.125
+
+        const oldMonthly = oldBiMonthly / 2
+
+        const newMontly = newTarif.reduce((total, rateTuple) => {
+          const deduction = monthlyConsumtion > rateTuple[0] ? rateTuple[0] : monthlyConsumtion
+          monthlyConsumtion -= deduction
+
+          return total + (deduction * rateTuple[1])
+        }, 7.5) * 1.125
+
+        const increase = (newMontly / oldMonthly) - 1
+
+        const result = document.getElementById('resultTemplate').content.cloneNode(true)
+        result.getElementById('oldMonthly').textContent = formater.format(oldMonthly)
+        result.getElementById('newMonthly').textContent = formater.format(newMontly)
+        result.getElementById('increase').textContent = Math.round(increase * 100)
+
+        document.getElementById('result').replaceChildren(result)
+      })
+    </script>
+  </body>
+</html>
