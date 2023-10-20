@@ -1,0 +1,37 @@
+{
+  "background_color": "#ffffff",
+  "description": "Use this app to estimate your new monthly T&amp;TEC bill after the new rates come into effect.",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "T&amp;Tec Bill Estimator",
+  "orientation": "portrait",
+  "scope": "/",
+  "short_name": "T&amp;Tec Bill Estimator",
+  "start_url": "/",
+  "theme_color": "#6650a4",
+  "categories": [],
+  "screenshots": [
+    {
+      "src": "screenshot.png",
+      "sizes": "443x663",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "screenshot_desktop.png",
+      "sizes": "1113x664",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "icons": [
+    {
+      "src": "icon.svg",
+      "type": "image/svg+xml",
+      "sizes": "150x150"
+    }
+  ],
+  "shortcuts": [],
+  "id": "/",
+  "lang": "en"
+}
